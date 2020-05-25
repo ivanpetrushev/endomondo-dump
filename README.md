@@ -14,5 +14,17 @@ XXXXX is the USER_ID
 
 Look in the Request Headers and find the cookie. You only need USER_TOKEN from it.
 
+## Dumping monthly listings 
+
 Run:
 > $ USER_ID=XXX USER_TOKEN=YYY python3.7 dump_monthly_listings.py
+
+## Dumping individual workouts
+
+Run:
+> $ USER_ID=XXX USER_TOKEN=YYY python3.7 dump_individual_workouts.py
+
+
+## TODO
+* auto detect USER_ID
+* auto detect time interval
