@@ -90,6 +90,8 @@ client.create_database(INFLUX_DB)
 
 idx = 0
 batch = []
+batch_location = []
+good_gps_files = {}
 
 for (dirpath, dirnames, filenames) in os.walk(DETAILS_DUMP_DIR):
     print('Num files to import:', len(filenames))
@@ -122,5 +124,35 @@ for (dirpath, dirnames, filenames) in os.walk(DETAILS_DUMP_DIR):
             if field in workout:
                 body['fields'][field] = workout[field]
         batch.append(body)
-print('Batch prepared, writing...')
+
+        # WARNING: Endomondo is no longer storing GPX data in this format since 2015 :(
+        # We need to export individual GPX files
+        if 'points' in workout and 'points' in workout['points']:
+            print(f'Browsing gps in {filename}')
+            for i, item in enumerate(workout['points']['points']):
+                if 'latitude' not in item:
+                    continue
+
+                time = item['time'] if 'time' in item else workout['start_time']
+                body = {
+                    'measurement': 'location',
+                    'time': time,
+                    'tags': {
+                        'sport': SPORT_MAP[workout['sport']],
+                    },
+                    'fields': {
+                        'latitude': item['latitude'],
+                        'longitude': item['longitude']
+                    }
+                }
+                batch_location.append(body)
+                if filename not in good_gps_files:
+                    good_gps_files[filename] = 1
+# good_gps_files = list(good_gps_files.keys())
+# good_gps_files.sort()
+# print('Good GPS files', good_gps_files)
+
+print(f'Batch prepared, writing {len(batch)} records...')
 client.write_points(batch, database=INFLUX_DB)
+print(f'Batch location writing {len(batch_location)} records...')
+client.write_points(batch_location, database=INFLUX_DB)
