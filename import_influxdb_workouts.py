@@ -88,30 +88,39 @@ client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT)
 client.drop_database(INFLUX_DB)
 client.create_database(INFLUX_DB)
 
+idx = 0
+batch = []
+
 for (dirpath, dirnames, filenames) in os.walk(DETAILS_DUMP_DIR):
+    print('Num files to import:', len(filenames))
     for filename in filenames:
         with open(DETAILS_DUMP_DIR + '/' + filename) as fp:
             workout = json.load(fp)
-            dt = datetime.strptime(workout['start_time'], '%Y-%m-%dT%H:%M:%S.000Z')
+        idx += 1
+        if idx % 10 == 0:
+            print(f'Progress: {idx}/{len(filenames)}', end='\r')
+        dt = datetime.strptime(workout['start_time'], '%Y-%m-%dT%H:%M:%S.000Z')
 
-            body = {
-                'measurement': 'workouts',
-                'time': workout['start_time'],
-                'tags': {
-                    'sport': SPORT_MAP[workout['sport']],
-                    'month': dt.strftime('%m'),
-                    'month_name': dt.strftime('%B'),
-                    'year': dt.strftime('%Y'),
-                    'weekday': dt.strftime('%w'),
-                },
-                'fields': {
-                    'distance_m': workout['distance'] * 1000,
-                    'duration_s': workout['duration']
-                }
+        body = {
+            'measurement': 'workouts',
+            'time': workout['start_time'],
+            'tags': {
+                'sport': SPORT_MAP[workout['sport']],
+                'month': dt.strftime('%m'),
+                'month_name': dt.strftime('%B'),
+                'year': dt.strftime('%Y'),
+                'year_month': dt.strftime('%Y') + '-' + dt.strftime('%m'),
+                'weekday': dt.strftime('%w'),
+            },
+            'fields': {
+                'distance_m': workout['distance'] * 1000,
+                'duration_s': workout['duration']
             }
-            additional_fields = ['heart_rate_avg', 'heart_rate_max', 'hydration', 'speed_avg', 'speed_max', 'calories']
-            for field in additional_fields:
-                if field in workout:
-                    body['fields'][field] = workout[field]
-            print(body)
-            client.write_points([body], database=INFLUX_DB)
+        }
+        additional_fields = ['heart_rate_avg', 'heart_rate_max', 'hydration', 'speed_avg', 'speed_max', 'calories']
+        for field in additional_fields:
+            if field in workout:
+                body['fields'][field] = workout[field]
+        batch.append(body)
+print('Batch prepared, writing...')
+client.write_points(batch, database=INFLUX_DB)

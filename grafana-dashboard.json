@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1590415106201,
+  "iteration": 1590489974953,
   "links": [],
   "panels": [
     {
@@ -338,6 +338,7 @@
       "hiddenSeries": false,
       "hideTimeOverride": false,
       "id": 3,
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -363,11 +364,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_month",
+          "alias": "$tag_year_month",
           "groupBy": [
             {
               "params": [
-                "month"
+                "year_month"
               ],
               "type": "tag"
             },
@@ -469,6 +470,7 @@
       "hiddenSeries": false,
       "hideTimeOverride": false,
       "id": 5,
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -494,11 +496,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_month",
+          "alias": "$tag_year_month",
           "groupBy": [
             {
               "params": [
-                "month"
+                "year_month"
               ],
               "type": "tag"
             },
@@ -576,7 +578,7 @@
       }
     }
   ],
-  "schemaVersion": 25,
+  "schemaVersion": 21,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -642,5 +644,5 @@
   "timezone": "",
   "title": "Endomondo",
   "uid": "Dq4_UNzGz",
-  "version": 6
+  "version": 15
 }

@@ -28,3 +28,14 @@ Run:
 ## TODO
 * auto detect USER_ID
 * auto detect time interval
+
+# Charting
+
+Optionally, you can import data to InfluxDB and chart with Grafana.
+
+## Requirements
+* influxdb python module: `pip install influxdb`
+
+## Usage
+
+> $ 
