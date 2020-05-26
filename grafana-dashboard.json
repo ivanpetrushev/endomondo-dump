@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1590489974953,
+  "iteration": 1590492815676,
   "links": [],
   "panels": [
     {
@@ -644,5 +644,5 @@
   "timezone": "",
   "title": "Endomondo",
   "uid": "Dq4_UNzGz",
-  "version": 15
+  "version": 17
 }
